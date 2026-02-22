@@ -160,7 +160,7 @@ class RenamerWorker(QObject):
                     creation_time = get_creation_time(file_path, self.log.emit)
                     if not creation_time:
                         self.log.emit(
-                            f"Error: Could not get creation time for {file_path.name}"
+                            f"Error: Could not get creation time for {file_path.relative_to(self.folder)}"
                         )
                         errors += 1
                         continue
@@ -179,13 +179,13 @@ class RenamerWorker(QObject):
 
                     if new_path != file_path:
                         file_path.rename(new_path)
-                        self.log.emit(f"Renamed: {file_path.name} → {new_path.name}")
+                        self.log.emit(f"Renamed: {file_path.relative_to(self.folder)} → {new_path.relative_to(self.folder)}")
                         renamed += 1
                     else:
                         skipped += 1
 
                 except Exception as e:
-                    self.log.emit(f"Error processing {file_path.name}: {e}")
+                    self.log.emit(f"Error processing {file_path.relative_to(self.folder)}: {e}")
                     errors += 1
 
             self.finished.emit(renamed, skipped, errors, total)
